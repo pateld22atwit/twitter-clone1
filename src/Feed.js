@@ -5,6 +5,7 @@ import "./Feed.css";
 import db from "./firebase";
 import FlipMove from "react-flip-move";
 
+// to-do add stream API integration here
 function Feed() {
   const [posts, setPosts] = useState([]);
 
