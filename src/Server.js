@@ -13,7 +13,7 @@ const server = http.createServer(app)
 const io = socketIo(server)
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../', 'client', 'index.html'))
+  res.sendFile(path.resolve(__dirname, '../', 'Feed.js'))
 })
 
 const rulesURL = 'https://api.twitter.com/2/tweets/sample/stream'
