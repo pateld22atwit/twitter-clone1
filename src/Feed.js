@@ -28,11 +28,11 @@ function Feed() {
       }
   });
 
-  useEffect(() => {
+  /* useEffect(() => {
     db.collection("posts").onSnapshot((snapshot) =>
       setPosts(snapshot.docs.map((doc) => doc.data()))
     );
-  }, []);
+  }, []); */
 
   return (
     <div className="feed">
