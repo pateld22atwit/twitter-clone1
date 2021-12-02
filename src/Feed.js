@@ -23,6 +23,8 @@ function Feed() {
           id: tweet.data.id,
           text: tweet.data.text,
           username: `@${tweet.includes.users[0].username}`,
+          displayName: `@${tweet.includes.users[0].name}`,
+
       }
   });
 
