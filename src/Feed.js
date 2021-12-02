@@ -7,56 +7,51 @@ import FlipMove from "react-flip-move";
 
 // to-do add stream API integration here
 function Feed() {
+    /* useEffect(() => {
+      db.collection("posts").onSnapshot((snapshot) =>
+        setPosts(snapshot.docs.map((doc) => doc.data()))
+      );
+    }, []); */
+    const socket = io();
 
-  const [posts, setPosts] = useState([]);
-  const socket = io();
+    const tweets = [];
 
-  const tweets = [];
+    socket.on('connect', () => {
+        console.log('Connected to server...')
+    });
 
-  socket.on('connect', () => {
-      console.log('Connected to server...')
-  });
+    socket.on('tweet', (tweet) => {
+        // console.log(tweet)
+        const tweetData = {
+            id: tweet.data.id,
+            text: tweet.data.text,
+            username: `@${tweet.includes.users[0].username}`,
+            displayName: `@${tweet.includes.users[0].name}`,
 
-  socket.on('tweet', (tweet) => {
-      // console.log(tweet)
-      const tweetData = {
-          id: tweet.data.id,
-          text: tweet.data.text,
-          username: `@${tweet.includes.users[0].username}`,
-          displayName: `@${tweet.includes.users[0].name}`,
+        }
+        return (
 
-      }
-  });
+            <div className="feed">
+                <div className="feed__header">
+                    <h2>Home</h2>
+                </div>
 
-  /* useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) =>
-      setPosts(snapshot.docs.map((doc) => doc.data()))
-    );
-  }, []); */
+                <TweetBox/>
 
-  return (
-    <div className="feed">
-      <div className="feed__header">
-        <h2>Home</h2>
-      </div>
+                <FlipMove>
+                    <Post
+                        key={tweetData.text}
+                        displayName={tweetData.displayName}
+                        username={tweetData.username}
+                        // verified={post.verified}
+                        text={tweetData.text}
+                        //avatar={post.avatar}
+                        //image={post.image}
+                    />
+                </FlipMove>
+            </div>
+        );
+    });
 
-      <TweetBox />
-
-      <FlipMove>
-        {posts.map((post) => (
-          <Post
-            key={post.text}
-            displayName={post.displayName}
-            username={post.username}
-            verified={post.verified}
-            text={post.text}
-            avatar={post.avatar}
-            image={post.image}
-          />
-        ))}
-      </FlipMove>
-    </div>
-  );
 }
 
-export default Feed;
