@@ -13,7 +13,7 @@ const server = http.createServer(app)
 const io = socketIo(server)
 
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve( 'Feed.js'))
+  res.sendFile(path.resolve(__dirname, '../', 'src', 'Feed.js'))
 })
 
 const rulesURL = 'https://api.twitter.com/2/tweets/sample/stream'
@@ -58,5 +58,3 @@ io.on('connection', async () => {
 })
 
 server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
-
-export default io;
