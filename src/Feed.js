@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import TweetBox from "./TweetBox";
+import io from "./Server";
 import Post from "./Post";
 import "./Feed.css";
 import db from "./firebase";
@@ -7,13 +8,10 @@ import FlipMove from "react-flip-move";
 
 // to-do add stream API integration here
 function Feed() {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    db.collection("posts").onSnapshot((snapshot) =>
-      setPosts(snapshot.docs.map((doc) => doc.data()))
-    );
-  }, []);
+     const socket = io()
+     socket.on('connect', () => {
+        console.log('Connected to server...')
+      })
 
   return (
     <div className="feed">
@@ -22,23 +20,19 @@ function Feed() {
       </div>
 
       <TweetBox />
-
-      <FlipMove>
-        {posts.map((post) => (
-          <Post
-            key={post.text}
-            displayName={post.displayName}
-            username={post.username}
-            verified={post.verified}
-            text={post.text}
-            avatar={post.avatar}
-            image={post.image}
-          />
-        ))}
-      </FlipMove>
+      <Post
+            key=""
+            displayName="love"
+            username="G-money"
+            verified={true}
+            text="testing"
+            //avatar={post.avatar}
+            //image={post.image}
+      />
     </div>
-  );
+  )
 }
 
 export default Feed;
+
 
