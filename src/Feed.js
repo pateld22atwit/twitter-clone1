@@ -7,7 +7,24 @@ import FlipMove from "react-flip-move";
 
 // to-do add stream API integration here
 function Feed() {
+
   const [posts, setPosts] = useState([]);
+  const socket = io();
+
+  const tweets = [];
+
+  socket.on('connect', () => {
+      console.log('Connected to server...')
+  });
+
+  socket.on('tweet', (tweet) => {
+      // console.log(tweet)
+      const tweetData = {
+          id: tweet.data.id,
+          text: tweet.data.text,
+          username: `@${tweet.includes.users[0].username}`,
+      }
+  });
 
   useEffect(() => {
     db.collection("posts").onSnapshot((snapshot) =>
