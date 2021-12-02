@@ -8,11 +8,11 @@ import FlipMove from "react-flip-move";
 
 // to-do add stream API integration here
 function Feed() {
-     const socket = io()
+     /*const socket = io()
      socket.on('connect', () => {
         console.log('Connected to server...')
       })
-
+*/
   return (
     <div className="feed">
       <div className="feed__header">
@@ -21,7 +21,7 @@ function Feed() {
 
       <TweetBox />
       <Post
-            key=""
+            key="this man"
             displayName="love"
             username="G-money"
             verified={true}
