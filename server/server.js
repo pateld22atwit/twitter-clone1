@@ -1,22 +1,56 @@
+const http = require('http')
+const path = require('path')
+const express = require('express')
+const socketIo = require('socket.io')
+const needle = require('needle')
+const config = require('dotenv').config()
+const TOKEN = process.env.TWITTER_BEARER_TOKEN
+const PORT = process.env.PORT || 3000
 
-const express = require('express');
-const http = require('http');
-const socketio = require('socket.io');
-const path = require('path');
-const bodyParser = require('body-parser');
-const port = process.env.PORT || 3000;
-const app = express();
-require('dotenv').config({ path: '../../.env' });
+const app = express()
 
-const server = http.createServer(app);
-const io = socketio(server);
+const server = http.createServer(app)
+const io = socketIo(server)
 
-app.use(bodyParser.json());
+const rulesURL = 'https://api.twitter.com/2/tweets/sample/stream'
+const streamURL = 'https://api.twitter.com/2/tweets/sample/stream?tweet.fields=public_metrics&expansions=author_id'
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+app.get("*", (request, res) => {
+    res.sendFile(path.join(__dirname, "../build", "index.html"));
+  });
 
-require('./routes/tweets.js')(app, io);
+function streamTweets(socket) {
+  const stream = needle.get(streamURL, {
+    headers: {
+      Authorization: `Bearer ${TOKEN}`,
+    },
+  })
 
-server.listen(port, () => {
-    console.log('server is up');
-});
+  stream.on('data', (data) => {
+    try {
+      const json = JSON.parse(data)
+      console.log(json)
+      socket.emit('tweet', json)
+    } catch (error) {}
+  })
+
+  return stream
+}
+
+io.on('connection', async () => {
+  console.log('Client connected...')
+  const filteredStream = streamTweets(io)
+
+  let timeout = 0
+  filteredStream.on('timeout', () => {
+    // Reconnect on error
+    console.warn('A connection error occurred. Reconnecting…')
+    setTimeout(() => {
+      timeout++
+      streamTweets(io)
+    }, 2 ** timeout)
+    streamTweets(io)
+  })
+})
+
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`))
