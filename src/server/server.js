@@ -1,3 +1,6 @@
+
+ console.log("here")
+
 const http = require('http')
 const path = require('path')
 const express = require('express')
@@ -16,7 +19,7 @@ const rulesURL = 'https://api.twitter.com/2/tweets/sample/stream'
 const streamURL = 'https://api.twitter.com/2/tweets/sample/stream?tweet.fields=public_metrics&expansions=author_id'
 
 app.get("*", (request, res) => {
-    res.sendFile(path.join(__dirname, "../build", "index.html"));
+    res.sendFile(path.join(__dirname,"../", "../public", "index.html"));
   });
 
 function streamTweets(socket) {
